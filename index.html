@@ -86,7 +86,7 @@
                 </button>
                 
                 <div class="flex space-x-2 w-full sm:w-auto justify-center">
-                    <button onclick="window.showAdminPanel()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 px-4 rounded-full transition duration-300 flex items-center justify-center" title="Organizatoram">
+                    <button onclick="window.showAdminPanel()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 px-4 rounded-full transition duration-300 flex items-center justify-center" title="Organizatoram (ar paroli)">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </button>
                     <button onclick="window.showQRModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 px-4 rounded-full transition duration-300 flex items-center justify-center" title="Dalīties">
@@ -217,9 +217,12 @@
                 </div>
             </div>
             
-            <div class="text-center mt-6">
+            <div class="text-center mt-6 space-x-4">
                 <button onclick="window.closeAdminPanel()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-full transition duration-300">
                     Atgriezties
+                </button>
+                <button onclick="window.resetResults()" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold py-3 px-8 rounded-full transition duration-300">
+                    Dzēst rezultātus
                 </button>
             </div>
         </div>
@@ -244,10 +247,18 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Config Setup
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        // Firebase Config Setup - NEAIZMIRSTI IELĪMĒT SAVU KODU NO FIREBASE ŠEIT
+        const firebaseConfig = {
+  apiKey: "AIzaSyBsObUfy2NzMXR4_a5qwUgh78rg2NIE10Y",
+  authDomain: "emmc-c0939.firebaseapp.com",
+  projectId: "emmc-c0939",
+  storageBucket: "emmc-c0939.firebasestorage.app",
+  messagingSenderId: "671247182428",
+  appId: "1:671247182428:web:25895e82c5d269567ad499",
+  measurementId: "G-K9W1JPFG88"
+};
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app';
         
         let db = null;
@@ -262,19 +273,13 @@
             
             // Auto Sign-in
             const initAuth = async () => {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    try {
-                        const userCred = await signInWithCustomToken(auth, __initial_auth_token);
-                        user = userCred.user;
-                    } catch (e) {
-                        console.error("Custom token auth failed", e);
-                        // Fallback
-                        const userCred = await signInAnonymously(auth);
-                        user = userCred.user;
-                    }
-                } else {
+                // Since we are using a custom Firebase project, we should rely on Anonymous Auth
+                // directly to avoid mismatch errors with the environment's token.
+                try {
                     const userCred = await signInAnonymously(auth);
                     user = userCred.user;
+                } catch (e) {
+                    console.error("Anonymous auth failed", e);
                 }
             };
             initAuth();
@@ -289,6 +294,7 @@
         window.restartQuiz = restartQuiz;
         window.showAdminPanel = showAdminPanel;
         window.closeAdminPanel = closeAdminPanel;
+        window.resetResults = resetResults;
         
         // QR Code Logic
         window.showQRModal = function() {
@@ -301,6 +307,21 @@
         window.closeQRModal = function() {
             document.getElementById('qr-modal').classList.add('hidden');
         };
+
+        // ADMIN PANEL - Password Check
+        function showAdminPanel() {
+            // ŠEIT IR TAVA PAROLE
+            const correctPassword = "emmc10"; 
+            
+            const password = prompt("Ievadi administratora paroli:");
+            if (password === correctPassword) {
+                document.getElementById('start-screen').classList.add('hidden');
+                document.getElementById('admin-screen').classList.remove('hidden');
+                loadAdminStats();
+            } else if (password !== null) {
+                alert("Nepareiza parole! Piekļuve liegta.");
+            }
+        }
 
         // Data
         const originalQuizData = [
@@ -890,12 +911,6 @@
             usernameInput.value = userName; 
         }
 
-        function showAdminPanel() {
-            startScreen.classList.add('hidden');
-            adminScreen.classList.remove('hidden');
-            loadAdminStats();
-        }
-
         function closeAdminPanel() {
             adminScreen.classList.add('hidden');
             startScreen.classList.remove('hidden');
@@ -996,6 +1011,30 @@
             } catch (e) {
                 console.error("Admin load error", e);
                 listEl.innerHTML = '<div class="text-center text-red-500 py-8">Kļūda ielādējot datus. Pārbaudiet savienojumu.</div>';
+            }
+        }
+
+        async function resetResults() {
+            if (!confirm("Vai tiešām vēlaties dzēst VISUS rezultātus? Šo darbību nevar atsaukt.")) return;
+
+            const listEl = document.getElementById('admin-stats-list');
+            listEl.innerHTML = '<div class="text-center text-gray-500 py-8">Dzēš datus...</div>';
+
+            try {
+                const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard'));
+                
+                const deletePromises = [];
+                querySnapshot.forEach((document) => {
+                    deletePromises.push(deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'leaderboard', document.id)));
+                });
+
+                await Promise.all(deletePromises);
+                
+                alert("Visi rezultāti ir veiksmīgi dzēsti.");
+                loadAdminStats(); // Refresh empty stats
+            } catch (e) {
+                console.error("Error deleting documents: ", e);
+                alert("Kļūda dzēšot datus. Pārbaudiet konsoli.");
             }
         }
     </script>
