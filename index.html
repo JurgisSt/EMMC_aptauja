@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viktorīna: Epilepsija un Miega traucējumi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdfa;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .option-card {
+            transition: all 0.2s ease;
+        }
+        .option-card:hover:not(.disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .section-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .badge-epilepsy { background-color: #e9d5ff; color: #7e22ce; }
+        .badge-sleep { background-color: #ccfbf1; color: #0f766e; }
+        
+        /* Scrollbar styling */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-4xl w-full bg-white rounded-2xl shadow-xl overflow-hidden my-8 relative" id="app">
+        
+        <!-- Start Screen -->
+        <div id="start-screen" class="p-8 text-center fade-in">
+            <div class="flex justify-center space-x-4 mb-6">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Viktorīna: Epilepsija un Miegs</h1>
+            <p class="text-gray-600 mb-6 text-lg">Pārbaudi zināšanas un sacenties par labākā eksperta titulu!</p>
+            
+            <div class="mb-8 max-w-xs mx-auto">
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-2 text-left">Ievadi savu vārdu:</label>
+                <input type="text" id="username" class="shadow-sm focus:ring-teal-500 focus:border-teal-500 block w-full sm:text-sm border-gray-300 rounded-md p-3 border" placeholder="Tavs vārds">
+            </div>
+
+            <div class="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center items-center">
+                <button onclick="window.startQuiz()" class="bg-gradient-to-r from-purple-600 to-teal-600 hover:from-purple-700 hover:to-teal-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105 shadow-lg w-full sm:w-auto">
+                    Sākt viktorīnu
+                </button>
+                
+                <div class="flex space-x-2 w-full sm:w-auto justify-center">
+                    <button onclick="window.showAdminPanel()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 px-4 rounded-full transition duration-300 flex items-center justify-center" title="Organizatoram">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </button>
+                    <button onclick="window.showQRModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 px-4 rounded-full transition duration-300 flex items-center justify-center" title="Dalīties">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4h2v-4zM5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 h-2">
+                <div id="progress-bar" class="bg-gradient-to-r from-purple-500 to-teal-500 h-2 transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <div class="p-6 md:p-8 max-w-2xl mx-auto">
+                <!-- Header -->
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span id="section-badge" class="section-badge badge-epilepsy">Epilepsija</span>
+                        <div class="text-sm font-medium text-gray-500">Jautājums <span id="current-q-num">1</span> no <span id="total-q-num">16</span></div>
+                    </div>
+                    <span class="text-sm font-bold text-gray-600 bg-gray-100 px-3 py-1 rounded-lg" id="score-display">Punkti: 0</span>
+                </div>
+
+                <!-- Question -->
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold text-gray-800 mb-2 leading-tight"></h2>
+                <p id="question-type" class="text-sm text-gray-500 mb-6 italic"></p>
+
+                <!-- Options -->
+                <div id="options-container" class="space-y-3 mb-8"></div>
+
+                <!-- Feedback Section -->
+                <div id="feedback-section" class="hidden mb-6 p-4 rounded-lg bg-blue-50 border border-blue-100 fade-in">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1">
+                            <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-bold text-blue-800 uppercase tracking-wide">Eksperta komentārs</h3>
+                            <div class="mt-1 text-gray-700 text-sm leading-relaxed" id="expert-comment"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex justify-end">
+                    <button id="submit-btn" onclick="window.checkAnswer()" class="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-md">
+                        Iesniegt atbildi
+                    </button>
+                    <button id="next-btn" onclick="window.nextQuestion()" class="hidden bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center shadow-md">
+                        Nākamais
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden p-6 md:p-8 text-center fade-in">
+            <div id="result-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"></div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-1">Pabeigts!</h2>
+            <p class="text-gray-600 mb-6">Spēlētājs: <span id="result-player-name" class="font-bold"></span> | Rezultāts: <span id="final-score" class="font-bold text-teal-600"></span> no <span id="total-final"></span></p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left max-w-3xl mx-auto">
+                <!-- Leaderboard Column -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 h-96 flex flex-col">
+                    <h3 class="text-lg font-bold text-gray-700 mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        Labākie rezultāti
+                    </h3>
+                    <div id="leaderboard-list" class="flex-1 overflow-y-auto custom-scroll space-y-2 pr-2">
+                        <div class="text-gray-500 text-sm italic text-center mt-10">Ielādē datus...</div>
+                    </div>
+                </div>
+
+                <!-- Answers Summary Column -->
+                <div class="bg-white p-4 rounded-xl border border-gray-200 h-96 flex flex-col shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-700 mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        Tavs kopsavilkums
+                    </h3>
+                    <div id="summary-list" class="flex-1 overflow-y-auto custom-scroll space-y-3 pr-2">
+                        <!-- Summary injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="window.restartQuiz()" class="mt-8 bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg">
+                Uz sākumu
+            </button>
+        </div>
+
+        <!-- Admin Screen -->
+        <div id="admin-screen" class="hidden p-6 md:p-8 fade-in h-full flex flex-col">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Organizatora kopsavilkums</h2>
+                <button onclick="window.closeAdminPanel()" class="text-gray-500 hover:text-gray-800">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div class="bg-purple-50 p-6 rounded-xl border border-purple-100 text-center">
+                    <div class="text-3xl font-bold text-purple-700" id="admin-total-users">-</div>
+                    <div class="text-sm text-purple-600 uppercase tracking-wide font-semibold mt-1">Kopā dalībnieku</div>
+                </div>
+                <div class="bg-teal-50 p-6 rounded-xl border border-teal-100 text-center">
+                    <div class="text-3xl font-bold text-teal-700" id="admin-avg-score">-</div>
+                    <div class="text-sm text-teal-600 uppercase tracking-wide font-semibold mt-1">Vidējais rezultāts</div>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-bold text-gray-700 mb-4">Jautājumu statistika (no sarežģītākā)</h3>
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden flex-1 flex flex-col">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 grid grid-cols-12 gap-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <div class="col-span-8 md:col-span-9">Jautājums</div>
+                    <div class="col-span-2 text-right">Pareizi</div>
+                    <div class="col-span-2 md:col-span-1 text-right">%</div>
+                </div>
+                <div id="admin-stats-list" class="overflow-y-auto custom-scroll p-0">
+                    <div class="text-center text-gray-500 py-8">Ielādē statistiku...</div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-6">
+                <button onclick="window.closeAdminPanel()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-full transition duration-300">
+                    Atgriezties
+                </button>
+            </div>
+        </div>
+
+        <!-- QR Code Modal -->
+        <div id="qr-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center fade-in backdrop-blur-sm">
+            <div class="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full mx-4">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Skenē, lai piedalītos!</h3>
+                <div class="bg-white p-2 rounded-lg border-2 border-gray-100 inline-block mb-4">
+                    <img id="qr-image" src="" alt="QR Kods" class="w-48 h-48 object-contain">
+                </div>
+                <p class="text-gray-500 text-sm mb-6">Noskenē šo kodu ar telefona kameru, lai atvērtu viktorīnu.</p>
+                <button onclick="window.closeQRModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-full transition duration-300">
+                    Aizvērt
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Config Setup
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app';
+        
+        let db = null;
+        let auth = null;
+        let user = null;
+
+        // Initialize Firebase
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            
+            // Auto Sign-in
+            const initAuth = async () => {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
+                        const userCred = await signInWithCustomToken(auth, __initial_auth_token);
+                        user = userCred.user;
+                    } catch (e) {
+                        console.error("Custom token auth failed", e);
+                        // Fallback
+                        const userCred = await signInAnonymously(auth);
+                        user = userCred.user;
+                    }
+                } else {
+                    const userCred = await signInAnonymously(auth);
+                    user = userCred.user;
+                }
+            };
+            initAuth();
+        } catch (e) {
+            console.error("Firebase init failed (might be offline):", e);
+        }
+
+        // --- Quiz Logic State ---
+        window.startQuiz = startQuiz;
+        window.checkAnswer = checkAnswer;
+        window.nextQuestion = nextQuestion;
+        window.restartQuiz = restartQuiz;
+        window.showAdminPanel = showAdminPanel;
+        window.closeAdminPanel = closeAdminPanel;
+        
+        // QR Code Logic
+        window.showQRModal = function() {
+            const currentUrl = window.location.href;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentUrl)}`;
+            document.getElementById('qr-image').src = qrUrl;
+            document.getElementById('qr-modal').classList.remove('hidden');
+        };
+
+        window.closeQRModal = function() {
+            document.getElementById('qr-modal').classList.add('hidden');
+        };
+
+        // Data
+        const originalQuizData = [
+             // --- EPILEPSIJA ---
+            {
+                section: "Epilepsija",
+                question: "Kā var izpausties epilepsijas lēkme?",
+                type: "multiple",
+                hint: "(Atzīmē visas pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Kritiens zemē un krampji (toniski-kloniskie krampji)." },
+                    { id: 'B', text: "Pēkšņa sastingšana un 'aizsapņošanās' uz dažām sekundēm." },
+                    { id: 'C', text: "Dīvainas sajūtas vēderā, kas ceļas uz augšu, vai déjà vu sajūta." },
+                    { id: 'D', text: "Raudāšana mājasdarbu laikā." },
+                    { id: 'E', text: "Nekontrolējama agresija un vēlme uzbrukt apkārtējiem." },
+                    { id: 'F', text: "Neapzinātas darbības, piemēram, lūpu čāpstināšana vai drēbju burzīšana." }
+                ],
+                correct: ['A', 'B', 'C', 'F'],
+                comment: "Lēkmes laikā cilvēks nekļūst agresīvs; raudāšana nav raksturīgs epilepsijas simptoms. Lēkmes var būt ļoti smalkas."
+            },
+            {
+                section: "Epilepsija",
+                question: "Kas no minētā IR patiesie epilepsijas cēloņi vai riska faktori?",
+                type: "multiple",
+                hint: "(Atzīmē visas pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Galvas traumas un insults." },
+                    { id: 'B', text: "Pārmērīga viedierīču lietošana bērnībā." },
+                    { id: 'C', text: "Ģenētiska predispozīcija." },
+                    { id: 'D', text: "Mēness fāzes (pilnmēness)." },
+                    { id: 'E', text: "Vakcinācija." }
+                ],
+                correct: ['A', 'C'],
+                comment: "Zinātniski nav pierādīts, ka mēness fāzes vai vakcinācija izraisītu epilepsiju. Viedierīces pašas par sevi slimību neizraisa."
+            },
+            {
+                section: "Epilepsija",
+                question: "Ko DARĪT, ja redzat cilvēku ar krampju lēkmi?",
+                type: "multiple",
+                hint: "(Atzīmē visas pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Ielikt mutē karoti vai kādu priekšmetu, lai 'nenorij mēli'." },
+                    { id: 'B', text: "Palikt zem galvas kaut ko mīkstu." },
+                    { id: 'C', text: "Fiksēt lēkmes sākuma laiku." },
+                    { id: 'D', text: "Ar spēku turēt rokas un kājas, lai neļautu raustīties." },
+                    { id: 'E', text: "Pēc krampju beigām pagriezt cilvēku stabilajā sānu pozā." }
+                ],
+                correct: ['B', 'C', 'E'],
+                comment: "Nekad neko nelieciet mutē! Mēli norīt nav iespējams. Svarīgākais ir pasargāt galvu un uzņemt laiku."
+            },
+            {
+                section: "Epilepsija",
+                question: "Vai cilvēks ar epilepsiju drīkst vadīt automašīnu?",
+                type: "single",
+                hint: "(Izvēlies vienu pareizo atbildi)",
+                options: [
+                    { id: 'A', text: "Nē, nekad, tas ir aizliegts uz mūžu." },
+                    { id: 'B', text: "Jā, ja lēkmes nav bijušas noteiktu laiku (parasti 1 gadu)." },
+                    { id: 'C', text: "Jā, bet tikai diennakts gaišajā laikā." },
+                    { id: 'D', text: "Jā, bet automašīnai obligāti jābūt marķētai ar speciālu uzlīmi." }
+                ],
+                correct: ['B'],
+                comment: "Ja ar medikamentiem tiek panākta stabila remisija, ārstu komisija var atļaut vadīt transportlīdzekli."
+            },
+            {
+                section: "Epilepsija",
+                question: "Kuri sporta veidi saskaņā ar ILAE iteikumiem tiek uzskatīti par drošiem jebkuram?",
+                type: "multiple",
+                hint: "(Atzīmē visas pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Niršana ar akvalangu." },
+                    { id: 'B', text: "Basketbols un volejbols." },
+                    { id: 'C', text: "Dejas un golfs." },
+                    { id: 'D', text: "Klinšu kāpšana." },
+                    { id: 'E', text: "Distanču slēpošana." },
+                    { id: 'F', text: "Futbols." },
+                    { id: 'G', text: "Bokss." }
+                ],
+                correct: ['B', 'C', 'E', 'F'],
+                comment: "Komandu sporta veidi ir droši. Bokss un niršana ir augsta riska aktivitātes."
+            },
+            {
+                section: "Epilepsija",
+                question: "Vai cilvēkiem ar epilepsiju ir aizliegts apmeklēt kino un teātri gaismas efektu dēļ?",
+                type: "single",
+                hint: "(Izvēlies vienu pareizo atbildi)",
+                options: [
+                    { id: 'A', text: "Jā, visiem pacientiem ir jāizvairās no spilgtām gaismām." },
+                    { id: 'B', text: "Nē, tas attiecas tikai uz nelielu daļu pacientu." }
+                ],
+                correct: ['B'],
+                comment: "Tikai aptuveni 3-5% pacientu ir fotosensīvā epilepsija."
+            },
+            {
+                section: "Epilepsija",
+                question: "Kādas ir mūsdienīgas epilepsijas ārstēšanas metodes, ja zāles nepalīdz?",
+                type: "multiple",
+                hint: "(Atzīmē visas pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Ketogēna diēta." },
+                    { id: 'B', text: "VNS terapija (klejotājnerva stimulācija)." },
+                    { id: 'C', text: "Hipnoze."},
+                    { id: 'D', text: "Epilepsijas perēkļa kontroles biofīdbeks." },
+                    { id: 'E', text: "Bez zālēm jau īsti citu variantu nav." },
+                    { id: 'F', text: "Epilepsijas ķirurģija." }
+                ],
+                correct: ['A', 'B', 'F'],
+                comment: "Sarežģītos gadījumos palīdz ketogēna diēta, VNS stimulators vai neiroķirurģija."
+            },
+            {
+                section: "Epilepsija",
+                question: "Kāda ir epilepsijas prognoze? Vai to var izārstēt?",
+                type: "single",
+                hint: "(Izvēlies vienu pareizo atbildi)",
+                options: [
+                    { id: 'A', text: "Tā ir progresējoša slimība, kas vienmēr noved pie invaliditātes." },
+                    { id: 'B', text: "Ar pareizu ārstēšanu 60-70% pacientu lēkmes pilnībā izzūd." },
+                    { id: 'C', text: "Labs ārsts var panākt lēkmju brīvību 30-40% gadījumu." },
+                    { id: 'D', text: "Pacientiem ar epilepsiju nav ieteicams radīt bērnus." }
+                ],
+                correct: ['B'],
+                comment: "Vairums cilvēku ar epilepsiju dzīvo pilnīgi normālu dzīvi."
+            },
+            // --- MIEGS ---
+            {
+                section: "Miegs",
+                question: "Kāda ir viena no biežākajām mazu bērnu vecāku sūdzībām par bērna miegu?",
+                type: "multiple",
+                hint: "(Atzīmē pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Bērns neguļ kopš dzimšanas." },
+                    { id: 'B', text: "Bērnam vispār nav dziļā miega." },
+                    { id: 'C', text: "Šajā vecumā jau vajadzētu mācēt gulēt visu nakti." },
+                    { id: 'D', text: "Bērns mostas ar raudienu." },
+                    { id: 'E', text: "Bērns guļ pārāk daudz un ir grūti pamodināms uz ēšanu." },
+                    { id: 'F', text: "Bērns aizmieg uzreiz pēc ielikšanas gultā." }
+                ],
+                correct: ['A', 'B', 'C', 'D'],
+                comment: "Sūdzības par 'dziļā miega neesamību' bieži saistītas ar bērna vieglo mošanos, kas ir normāla."
+            },
+            {
+                section: "Miegs",
+                question: "Kas bieži izraisa iemigšanas grūtības un bezmiegu pusaudžiem?",
+                type: "multiple",
+                hint: "(Atzīmē pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Stress un trauksme." },
+                    { id: 'B', text: "Uzmācīgas domas (ruminācija)." },
+                    { id: 'C', text: "Kofeīna lietošana pēcpusdienā." },
+                    { id: 'D', text: "Regulāra fiziska slodze dienas pirmajā pusē." },
+                    { id: 'E', text: "Pārāk agra celšanās uz skolu." },
+                    { id: 'F', text: "Garlaicīga grāmatu lasīšana." }
+                ],
+                correct: ['A', 'B', 'C'],
+                comment: "Kofeīns un stress neļauj pusaudža organismam laicīgi atslābt."
+            },
+            {
+                section: "Miegs",
+                question: "Kādi var būt obstruktīvas miega apnojas simptomi pirmsskolas bērniem?",
+                type: "multiple",
+                hint: "(Atzīmē pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Skaļa krākšana." },
+                    { id: 'B', text: "Elpas aiztures miegā." },
+                    { id: 'C', text: "Nakts enurēze (slapināšana gultā)." },
+                    { id: 'D', text: "Uzmanības traucējumi un hiperaktivitāte." },
+                    { id: 'E', text: "Pazemināts asinsspiediens." }
+                ],
+                correct: ['A', 'B', 'C', 'D'],
+                comment: "Bērni ar miega trūkumu bieži kļūst hiperaktīvi, nevis miegaini."
+            },
+            {
+                section: "Miegs",
+                question: "Kādos gadījumos bērnam ir nepieciešams veikt polisomnogrāfiju?",
+                type: "multiple",
+                hint: "(Atzīmē pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Ja ir neskaidra, pārmērīga dienas miegainība." },
+                    { id: 'B', text: "Ja ir aizdomas par apnoju." },
+                    { id: 'C', text: "Ja ir aizdomas par periodiskām kāju kustībām miegā." },
+                    { id: 'D', text: "Ja bērns naktīs pamostas un prasa ūdeni." },
+                    { id: 'E', text: "Pusaudžiem ar grūtībām iemigt." }
+                ],
+                correct: ['A', 'B', 'C'],
+                comment: "Polisomnogrāfija ir 'zelta standarts' sarežģītu miega slimību diagnostikā."
+            },
+            {
+                section: "Miegs",
+                question: "Kas ir multiplo miega latenču tests (MMLT)?",
+                type: "single",
+                hint: "(Izvēlies vienu pareizo atbildi)",
+                options: [
+                    { id: 'A', text: "Tests, kurā objektīvi nosaka, cik ātri cilvēks aizmieg dienas laikā." },
+                    { id: 'B', text: "Tests, kurā visu nakti mēra elpošanu." },
+                    { id: 'C', text: "Psiholoģisks tests intelekta noteikšanai." },
+                    { id: 'D', text: "Asins analīze miega hormonu noteikšanai." }
+                ],
+                correct: ['A'],
+                comment: "MMLT objektīvi mēra dienas miegainību un diagnosticē narkolepsiju."
+            },
+            {
+                section: "Miegs",
+                question: "Kas ir narkolepsija? (Atzīmē simptomus)",
+                type: "multiple",
+                hint: "(Atzīmē pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Pārmērīga dienas miegainība un miega lēkmes." },
+                    { id: 'B', text: "Nespēja aizmigt naktī stresa dēļ." },
+                    { id: 'C', text: "Muskuļu vājums emociju brīdī (katapleksija)." },
+                    { id: 'D', text: "Atkarība no miega zālēm." },
+                    { id: 'E', text: "Iedzimts oreksīna trūkums smadzenēs." }
+                ],
+                correct: ['A', 'C', 'E'],
+                comment: "Narkolepsija ir neiroloģiska slimība, nevis vienkārši 'miega bads'."
+            },
+            {
+                section: "Miegs",
+                question: "Kā ārstēt iemigšanas grūtības (bezmiegu) bērniem?",
+                type: "multiple",
+                hint: "(Atzīmē pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Pareizs miega režīms un higiēna." },
+                    { id: 'B', text: "Ekrānlaika ierobežošana vakaros." },
+                    { id: 'C', text: "Melatonīns 30 min. pirms iemigšanas." },
+                    { id: 'D', text: "Ļaut bērnam iet gulēt, kad viņš pats grib." },
+                    { id: 'E', text: "Kognitīvi biheiviorālā terapija (CBT-I)." }
+                ],
+                correct: ['A', 'B', 'E'],
+                comment: "Galvenā ārstēšana ir 'miega higiēna' un uzvedības terapija."
+            },
+            {
+                section: "Miegs",
+                question: "Kas ir staigāšana miegā (somnambulisms)?",
+                type: "multiple",
+                hint: "(Atzīmē pareizās atbildes)",
+                options: [
+                    { id: 'A', text: "Labdabīgs traucējums dziļajā miegā." },
+                    { id: 'B', text: "Garīga slimība." },
+                    { id: 'C', text: "Bērnu jāmodina, kratot aiz pleciem." },
+                    { id: 'D', text: "Parādība, kas bieži pāriet pati no sevis." },
+                    { id: 'E', text: "Tā notiek tikai pilnmēness laikā." }
+                ],
+                correct: ['A', 'D'],
+                comment: "Staigāšana miegā bērniem parasti nav bīstama un viņi to 'pāraug'."
+            }
+        ];
+
+        let quizData = [];
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOptions = new Set();
+        let isAnswered = false;
+        let userName = "Anonīms";
+        let userResultsSummary = []; // Stores details of each question answer
+
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const adminScreen = document.getElementById('admin-screen');
+        const questionText = document.getElementById('question-text');
+        const questionType = document.getElementById('question-type');
+        const optionsContainer = document.getElementById('options-container');
+        const progressBar = document.getElementById('progress-bar');
+        const currentQNum = document.getElementById('current-q-num');
+        const totalQNum = document.getElementById('total-q-num');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackSection = document.getElementById('feedback-section');
+        const expertComment = document.getElementById('expert-comment');
+        const scoreDisplay = document.getElementById('score-display');
+        const sectionBadge = document.getElementById('section-badge');
+        const usernameInput = document.getElementById('username');
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startQuiz() {
+            const inputName = usernameInput.value.trim();
+            if (inputName) {
+                userName = inputName;
+            } else {
+                alert("Lūdzu, ievadi savu vārdu, lai sāktu!");
+                return;
+            }
+
+            // Prepare Data
+            quizData = JSON.parse(JSON.stringify(originalQuizData)); // Deep copy
+            shuffleArray(quizData);
+            
+            // UI Setup
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            adminScreen.classList.add('hidden');
+            totalQNum.innerText = quizData.length;
+            userResultsSummary = [];
+            score = 0;
+            currentQuestion = 0;
+            scoreDisplay.innerText = "Punkti: 0";
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const data = quizData[currentQuestion];
+            isAnswered = false;
+            selectedOptions.clear();
+            
+            // Update Section Badge
+            sectionBadge.innerText = data.section;
+            sectionBadge.className = data.section === 'Epilepsija' ? 'section-badge badge-epilepsy' : 'section-badge badge-sleep';
+
+            // Text
+            questionText.innerText = data.question;
+            questionType.innerText = data.hint;
+            currentQNum.innerText = currentQuestion + 1;
+            
+            // Progress Bar
+            const progress = (currentQuestion / quizData.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Reset UI
+            submitBtn.classList.remove('hidden');
+            nextBtn.classList.add('hidden');
+            feedbackSection.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Options
+            optionsContainer.innerHTML = '';
+            // Shuffle options visually
+            const currentOptions = [...data.options];
+            shuffleArray(currentOptions);
+
+            currentOptions.forEach(opt => {
+                const btn = document.createElement('div');
+                const hoverClass = data.section === 'Epilepsija' ? 'hover:border-purple-300' : 'hover:border-teal-300';
+                
+                btn.className = `option-card w-full p-4 rounded-lg border-2 border-gray-200 cursor-pointer flex items-center bg-white ${hoverClass}`;
+                btn.onclick = () => selectOption(opt.id, btn);
+                btn.id = `opt-${opt.id}`;
+                
+                const checkbox = document.createElement('div');
+                checkbox.className = `w-6 h-6 rounded border-2 border-gray-300 mr-4 flex items-center justify-center transition-colors duration-200 flex-shrink-0`;
+                checkbox.id = `check-${opt.id}`;
+                if (data.type === 'single') checkbox.classList.add('rounded-full');
+
+                const text = document.createElement('span');
+                text.className = "text-gray-700 font-medium";
+                text.innerText = opt.text;
+
+                btn.appendChild(checkbox);
+                btn.appendChild(text);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(id, btnElement) {
+            if (isAnswered) return;
+            const data = quizData[currentQuestion];
+            const activeColor = data.section === 'Epilepsija' ? 'purple' : 'teal';
+            const borderColorClass = data.section === 'Epilepsija' ? 'border-purple-600' : 'border-teal-600';
+            const bgColorClass = data.section === 'Epilepsija' ? 'bg-purple-50' : 'bg-teal-50';
+            const checkBgClass = data.section === 'Epilepsija' ? 'bg-purple-600' : 'bg-teal-600';
+
+            if (data.type === 'single') {
+                selectedOptions.clear();
+                document.querySelectorAll('.option-card').forEach(el => {
+                    el.classList.remove(borderColorClass, bgColorClass);
+                    el.querySelector('div').classList.remove(checkBgClass, borderColorClass);
+                    el.querySelector('div').innerHTML = '';
+                });
+                selectedOptions.add(id);
+            } else {
+                if (selectedOptions.has(id)) selectedOptions.delete(id);
+                else selectedOptions.add(id);
+            }
+
+            // Visual Update
+            const checkbox = btnElement.querySelector('div');
+            
+            // Clear current styles first
+            btnElement.classList.remove('border-purple-600', 'bg-purple-50', 'border-teal-600', 'bg-teal-50');
+            checkbox.classList.remove('bg-purple-600', 'border-purple-600', 'bg-teal-600', 'border-teal-600');
+            checkbox.innerHTML = '';
+
+            if (selectedOptions.has(id)) {
+                btnElement.classList.add(borderColorClass, bgColorClass);
+                checkbox.classList.add(checkBgClass, borderColorClass);
+                checkbox.innerHTML = `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            }
+
+            // Btn state
+            if (selectedOptions.size > 0) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function checkAnswer() {
+            isAnswered = true;
+            const data = quizData[currentQuestion];
+            const correctSet = new Set(data.correct);
+            const selectedArray = Array.from(selectedOptions);
+            const isCorrect = selectedArray.length === correctSet.size && selectedArray.every(val => correctSet.has(val));
+
+            if (isCorrect) {
+                score++;
+                scoreDisplay.innerText = `Punkti: ${score}`;
+            }
+
+            // Save summary
+            userResultsSummary.push({
+                question: data.question,
+                isCorrect: isCorrect,
+                correctAnswers: data.correct.join(", "),
+                userAnswers: selectedArray.join(", ") || "-"
+            });
+
+            // Visual Feedback
+            document.querySelectorAll('.option-card').forEach(el => {
+                const id = el.id.replace('opt-', '');
+                el.classList.add('disabled', 'cursor-default');
+                el.onclick = null;
+                const checkDiv = el.querySelector('div');
+                
+                // Clear active styles
+                el.classList.remove('border-purple-600', 'bg-purple-50', 'border-teal-600', 'bg-teal-50', 'border-gray-200');
+                checkDiv.classList.remove('bg-purple-600', 'border-purple-600', 'bg-teal-600', 'border-teal-600');
+
+                if (correctSet.has(id)) {
+                    el.classList.add('border-green-500', 'bg-green-50');
+                    checkDiv.classList.add('bg-green-500', 'border-green-500');
+                    checkDiv.innerHTML = `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                } else if (selectedOptions.has(id)) {
+                    el.classList.add('border-red-500', 'bg-red-50');
+                    checkDiv.classList.add('bg-red-500', 'border-red-500');
+                    checkDiv.innerHTML = `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                } else {
+                    el.classList.add('border-gray-200', 'opacity-60');
+                }
+            });
+
+            expertComment.innerText = data.comment;
+            feedbackSection.classList.remove('hidden');
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        async function showResults() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            document.getElementById('result-player-name').innerText = userName;
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('total-final').innerText = quizData.length;
+            
+            // Icon logic
+            const percentage = (score / quizData.length) * 100;
+            const resultIcon = document.getElementById('result-icon');
+            if (percentage === 100) {
+                resultIcon.className = "w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600";
+                resultIcon.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+            } else if (percentage >= 70) {
+                resultIcon.className = "w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-600";
+                resultIcon.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+            } else {
+                resultIcon.className = "w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 text-orange-600";
+                resultIcon.innerHTML = `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+            }
+
+            // --- 1. Render User Summary ---
+            const summaryList = document.getElementById('summary-list');
+            summaryList.innerHTML = '';
+            userResultsSummary.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-lg border ${item.isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`;
+                
+                const icon = item.isCorrect 
+                    ? `<span class="text-green-600 font-bold">✓</span>` 
+                    : `<span class="text-red-600 font-bold">✗</span>`;
+
+                div.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="text-sm font-semibold text-gray-800 w-10/12">${index + 1}. ${item.question}</div>
+                        ${icon}
+                    </div>
+                    ${!item.isCorrect ? `
+                        <div class="mt-2 text-xs text-gray-600">
+                            <span class="block">Tava atbilde: <span class="font-medium text-red-600">${item.userAnswers}</span></span>
+                            <span class="block">Pareizi: <span class="font-medium text-green-600">${item.correctAnswers}</span></span>
+                        </div>
+                    ` : ''}
+                `;
+                summaryList.appendChild(div);
+            });
+
+            // --- 2. Save Score AND Details to Firebase ---
+            if (db) {
+                try {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard'), {
+                        name: userName,
+                        score: score,
+                        total: quizData.length,
+                        timestamp: serverTimestamp(),
+                        answers: userResultsSummary // Save detailed answers for admin view
+                    });
+                } catch (e) {
+                    console.error("Error saving score", e);
+                }
+                // Fetch Leaderboard
+                loadLeaderboard();
+            } else {
+                 document.getElementById('leaderboard-list').innerHTML = `<div class="text-center text-sm text-gray-500 mt-4">Nav savienojuma ar datubāzi.</div>`;
+            }
+        }
+
+        async function loadLeaderboard() {
+            const listEl = document.getElementById('leaderboard-list');
+            listEl.innerHTML = '<div class="text-center text-xs text-gray-400 mt-4">Atjauno sarakstu...</div>';
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard'));
+                let scores = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if(data.name && typeof data.score === 'number') {
+                         scores.push(data);
+                    }
+                });
+
+                scores.sort((a, b) => b.score - a.score);
+                const top10 = scores.slice(0, 10);
+
+                listEl.innerHTML = '';
+                if (top10.length === 0) {
+                    listEl.innerHTML = '<div class="text-center text-sm text-gray-500 mt-4">Esi pirmais sarakstā!</div>';
+                    return;
+                }
+
+                top10.forEach((s, i) => {
+                    const isMe = s.name === userName && s.score === score; 
+                    const row = document.createElement('div');
+                    row.className = `flex justify-between items-center p-2 rounded ${isMe ? 'bg-yellow-50 border border-yellow-200' : 'border-b border-gray-100'}`;
+                    
+                    let rankColor = "text-gray-500";
+                    if(i===0) rankColor="text-yellow-600 font-bold";
+                    if(i===1) rankColor="text-gray-600 font-bold";
+                    if(i===2) rankColor="text-orange-600 font-bold";
+
+                    row.innerHTML = `
+                        <div class="flex items-center">
+                            <span class="w-6 text-center ${rankColor} text-sm mr-2">${i+1}.</span>
+                            <span class="text-sm font-medium text-gray-800 truncate max-w-[120px]">${s.name}</span>
+                        </div>
+                        <span class="text-sm font-bold text-teal-600">${s.score}/${s.total}</span>
+                    `;
+                    listEl.appendChild(row);
+                });
+
+            } catch (e) {
+                console.error("Fetch leaderboard error", e);
+                listEl.innerHTML = '<div class="text-center text-sm text-red-400 mt-4">Kļūda ielādējot datus.</div>';
+            }
+        }
+
+        function restartQuiz() {
+            startScreen.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+            adminScreen.classList.add('hidden');
+            usernameInput.value = userName; 
+        }
+
+        function showAdminPanel() {
+            startScreen.classList.add('hidden');
+            adminScreen.classList.remove('hidden');
+            loadAdminStats();
+        }
+
+        function closeAdminPanel() {
+            adminScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+
+        async function loadAdminStats() {
+            const listEl = document.getElementById('admin-stats-list');
+            const totalEl = document.getElementById('admin-total-users');
+            const avgEl = document.getElementById('admin-avg-score');
+
+            listEl.innerHTML = '<div class="text-center text-gray-500 py-8">Ielādē statistiku...</div>';
+
+            try {
+                if (!db) throw new Error("No DB");
+
+                const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'leaderboard'));
+                let totalUsers = 0;
+                let totalScoreSum = 0;
+                let questionStats = {}; 
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if(data.name && typeof data.score === 'number') {
+                        totalUsers++;
+                        // Normalized total score to handle different quiz lengths if changed later, but assume static for now
+                        totalScoreSum += data.score; 
+
+                        // Aggregate Question Stats if available
+                        if (data.answers && Array.isArray(data.answers)) {
+                            data.answers.forEach(ans => {
+                                const qKey = ans.question; 
+                                if (!questionStats[qKey]) {
+                                    questionStats[qKey] = { correct: 0, total: 0 };
+                                }
+                                questionStats[qKey].total++;
+                                if (ans.isCorrect) {
+                                    questionStats[qKey].correct++;
+                                }
+                            });
+                        }
+                    }
+                });
+
+                if (totalUsers === 0) {
+                    listEl.innerHTML = '<div class="text-center text-gray-500 py-8">Nav datu.</div>';
+                    totalEl.innerText = '0';
+                    avgEl.innerText = '0';
+                    return;
+                }
+
+                // Update Header Stats
+                totalEl.innerText = totalUsers;
+                const avg = (totalScoreSum / totalUsers).toFixed(1);
+                avgEl.innerText = avg;
+
+                // Process Question Stats
+                const statsArray = Object.keys(questionStats).map(key => {
+                    const info = questionStats[key];
+                    const percent = Math.round((info.correct / info.total) * 100);
+                    return {
+                        question: key,
+                        correct: info.correct,
+                        total: info.total,
+                        percent: percent
+                    };
+                });
+
+                // Sort by difficulty (lowest percentage correct first)
+                statsArray.sort((a, b) => a.percent - b.percent);
+
+                listEl.innerHTML = '';
+                statsArray.forEach(item => {
+                    // Color code percentages
+                    let barColor = 'bg-red-500';
+                    let textColor = 'text-red-600';
+                    if (item.percent >= 70) { barColor = 'bg-green-500'; textColor = 'text-green-600'; }
+                    else if (item.percent >= 40) { barColor = 'bg-yellow-500'; textColor = 'text-yellow-600'; }
+
+                    const row = document.createElement('div');
+                    row.className = "px-4 py-3 border-b border-gray-100 grid grid-cols-12 gap-2 items-center hover:bg-gray-50";
+                    row.innerHTML = `
+                        <div class="col-span-8 md:col-span-9">
+                            <div class="text-sm font-medium text-gray-800">${item.question}</div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                                <div class="${barColor} h-1.5 rounded-full" style="width: ${item.percent}%"></div>
+                            </div>
+                        </div>
+                        <div class="col-span-2 text-right text-sm text-gray-500">
+                            ${item.correct}/${item.total}
+                        </div>
+                        <div class="col-span-2 md:col-span-1 text-right text-sm font-bold ${textColor}">
+                            ${item.percent}%
+                        </div>
+                    `;
+                    listEl.appendChild(row);
+                });
+
+            } catch (e) {
+                console.error("Admin load error", e);
+                listEl.innerHTML = '<div class="text-center text-red-500 py-8">Kļūda ielādējot datus. Pārbaudiet savienojumu.</div>';
+            }
+        }
+    </script>
+</body>
+</html>
